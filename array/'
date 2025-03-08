@@ -39,7 +39,6 @@ int main(void) {
 */
 
 int *array(int element1, int element2, int element3) {
-  // assuming that the next 3 int sized memory adresses are unallocated
   int *arrayp = &element1;
 
   arrayp++;
@@ -47,10 +46,13 @@ int *array(int element1, int element2, int element3) {
 
   arrayp++;
   *arrayp = element3;
-  return (arrayp - 2);
 }
 
 int main(void) {
-  int element2 = 10;
-  printf("arrayp: %d", *(array(3, element2, 4) + 1));
+  int object = 3;
+
+  // assuming that the next 3 int sized memory adresses are unallocated
+  int size = 3;
+
+  printf("arrayp: %d", *(arrayp - 3));
 }
