@@ -53,4 +53,5 @@ int *array(int element1, int element2, int element3) {
 int main(void) {
   int element2 = 10;
   printf("arrayp: %d", *(array(3, element2, 4) + 1));
+  return 0;
 }
