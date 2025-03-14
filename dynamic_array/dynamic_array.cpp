@@ -1,70 +1,50 @@
-#include <cstring>
-#include <experimental/filesystem>
-#include <filesystem>
 #include <iostream>
 
 template <class T> class DynamicArray {
 public:
-  DynamicArray(void) : internalarraysize(0) {};
-  DynamicArray(int size) : internalarraysize(size) { internalarray[size]; };
+  DynamicArray(int size = 0)
+      // allocate a little more than needed to save on heavy reallocation
+      // operations
+      : m_size(0), m_array(static_cast<T *>(calloc(m_size + 5, sizeof(T)))) {};
 
   ~DynamicArray() {};
 
   void push_back(T element) {
+    m_occupation++;
 
-    if (internalarraysize != 0) {
-      currarrayoccupation += 1;
+    if (m_occupation >= m_size) {
+      // allocate a little more than needed again
+      m_size += 5;
+      m_array = static_cast<T *>(realloc(m_array, m_size * sizeof(T)));
     }
-
-    /*
-    std::cout << "currarrayoccupation: " << currarrayoccupation << std::endl
-              << "internalarraysize: " << internalarraysize << std::endl;
-    */
-
-    if (currarrayoccupation >= internalarraysize) {
-
-      if (currarrayoccupation > internalarraysize) {
-        internalarraysize = currarrayoccupation;
-      }
-
-      T tmparray[internalarraysize + 1];
-
-      for (int i = 0; i < internalarraysize; i++) {
-        tmparray[i] = internalarray[i];
-        // std::cout << tmparray[i] << std::endl;
-      }
-
-      tmparray[internalarraysize] = element;
-
-      memset(internalarray, internalarraysize,
-             sizeof(internalarray[internalarraysize]));
-
-      // internalarray[internalarraysize];
-
-      for (int i = 0; i < internalarraysize; i++) {
-        std::cout << tmparray[i] << std::endl;
-        internalarray[i] = tmparray[i];
-      }
-
-      internalarraysize += 1;
-    }
+    *(m_array + m_occupation - 1) = element;
   };
 
-  T at(int index) { return internalarray[index]; };
+  T at(int index) { return *(m_array + index); };
+
+  int size(void) { return m_occupation; };
+
+  int fullsize(void) { return m_size; };
 
 private:
-  int currarrayoccupation = 0;
-  int internalarraysize;
-  T internalarray[];
+  int m_occupation = 0;
+  int m_size;
+  T *m_array = nullptr;
 };
 
 int main(void) {
   DynamicArray<int> myvec;
-  myvec.push_back(int(3));
-  myvec.push_back(int(2));
-  myvec.push_back(int(10));
-  std::cout << "first vec element: " << myvec.at(0) << std::endl;
-  std::cout << "second vec element: " << myvec.at(1) << std::endl;
-  std::cout << "third vec element: " << myvec.at(2) << std::endl;
+
+  myvec.push_back(3);
+  myvec.push_back(2);
+  myvec.push_back(10);
+  myvec.push_back(13);
+  myvec.push_back(15);
+  myvec.push_back(16);
+
+  for (int i = 0; i < myvec.size(); i++) {
+    std::cout << "vec element " << i << ": " << myvec.at(i) << std::endl;
+  }
+
   return 0;
 }
