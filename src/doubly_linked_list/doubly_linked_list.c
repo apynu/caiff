@@ -30,6 +30,19 @@ struct Node *addNodeToTail(struct Node *Head, int value) {
   return Head;
 }
 
+void removeNode(struct Node *RmNode) {
+  struct Node *PrevNode = RmNode->previousnode;
+
+  if (RmNode->nextnode == NULL) {
+    PrevNode->nextnode = NULL;
+  } else {
+    struct Node *NextNode = RmNode->nextnode;
+
+    PrevNode->nextnode = NextNode;
+    NextNode->previousnode = PrevNode;
+  }
+}
+
 int main(void) {
 
   struct Node *Head;
@@ -48,6 +61,17 @@ int main(void) {
          Head->nextnode->nextnode->previousnode->value);
 
   printf("ThirdNode Value: %d\n", Head->nextnode->nextnode->value);
+
+  // remove second node
+  removeNode(Head->nextnode);
+  printf("removed second node\n");
+  printf("New SecondNode Value: %d\n\n", Head->nextnode->value);
+
+  // remove new second node (third node)
+  removeNode(Head->nextnode);
+  if (Head->nextnode == NULL) {
+    printf("removed all nodes\n");
+  }
 
   return 0;
 }
