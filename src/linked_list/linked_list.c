@@ -3,25 +3,25 @@
 
 struct Node {
   int value;
-  struct Node *nodepointer;
+  struct Node *nextnode;
 } Node;
 
 struct Node *addNodeToTail(struct Node *Head, int value) {
 
-  // creat new node
   struct Node *NewNode = calloc(1, sizeof(struct Node));
-
-  // set new nodepointer to nodepoiner where head points to?
-  NewNode->nodepointer = Head->nodepointer;
-
-  Head->nodepointer = NewNode;
-
-  while (NewNode->nodepointer != NULL) {
-    NewNode = NewNode->nodepointer;
-  }
-
-  NewNode->nodepointer = NULL;
+  NewNode->nextnode = NULL;
   NewNode->value = value;
+
+  if (Head->nextnode == NULL) {
+    Head->nextnode = NewNode;
+  } else {
+    struct Node *tmp = Head;
+
+    while (tmp->nextnode != NULL) {
+      tmp = tmp->nextnode;
+    }
+    tmp->nextnode = NewNode;
+  }
 
   return Head;
 }
@@ -29,16 +29,14 @@ struct Node *addNodeToTail(struct Node *Head, int value) {
 int main(void) {
 
   struct Node *Head;
+
   Head->value = 1;
-  printf("Head Value: %d\n", Head->value);
   Head = addNodeToTail(Head, 2);
-  printf("SecondNode Value: %d\n", Head->nodepointer->value);
   Head = addNodeToTail(Head, 3);
-  printf("ThirdNode Value: %d\n", Head->nodepointer->nodepointer->value);
 
   printf("Head Value: %d\n", Head->value);
-  printf("SecondNode Value: %d\n", Head->nodepointer->value);
-  printf("ThirdNode Value: %d\n", Head->nodepointer->nodepointer->value);
+  printf("SecondNode Value: %d\n", Head->nextnode->value);
+  printf("ThirdNode Value: %d\n", Head->nextnode->nextnode->value);
 
   return 0;
 }

@@ -1,18 +1,22 @@
-SUBPROJECTS := linked_list dynamic_array array stack_dynamic_array
+SUBPROJECTS := linked_list dynamic_array array 
 BUILD_DIR := build
 
 .PHONY: all $(SUBPROJECTS)
 
 all: $(SUBPROJECTS)
 
+clean:
+	rm -rf $(BUILD_DIR)
+
 $(SUBPROJECTS):
 	mkdir -p $(BUILD_DIR)/$@ && \
 	cd $(BUILD_DIR)/$@ && cmake ../../src/$@ && $(MAKE)
 	#$(BUILD_DIR)/$@/$@
 
-run_%:
+run-%:
 	@$(BUILD_DIR)/$*/$*
 
-# Clean all subprojects
-clean:
-	rm -rf $(BUILD_DIR)
+debug-%: clean
+	@echo "Building in Debug mode..."
+	mkdir -p $(BUILD_DIR)/$* && \
+	cd $(BUILD_DIR)/$* && cmake -DCMAKE_BUILD_TYPE=Debug ../../src/$* && $(MAKE)
