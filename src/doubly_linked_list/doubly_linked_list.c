@@ -7,7 +7,7 @@ struct Node {
   struct Node *nextnode;
 } Node;
 
-struct Node *addNodeToTail(struct Node *Head, int value) {
+void addNodeToTail(struct Node *Head, int value) {
 
   struct Node *NewNode = calloc(1, sizeof(struct Node));
   NewNode->nextnode = NULL;
@@ -26,8 +26,6 @@ struct Node *addNodeToTail(struct Node *Head, int value) {
     tmp->nextnode = NewNode;
     NewNode->previousnode = tmp;
   }
-
-  return Head;
 }
 
 void removeNode(struct Node *RmNode) {
@@ -50,8 +48,8 @@ int main(void) {
   Head->previousnode = NULL;
   Head->value = 1;
 
-  Head = addNodeToTail(Head, 2);
-  Head = addNodeToTail(Head, 3);
+  addNodeToTail(Head, 2);
+  addNodeToTail(Head, 3);
 
   printf("Head Value: %d\n", Head->value);
   printf("Previous Head Value: %d\n\n", Head->nextnode->previousnode->value);
