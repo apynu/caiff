@@ -1,4 +1,4 @@
-SUBPROJECTS := linked_list dynamic_array array doubly_linked_list
+SUBPROJECTS := linked_list dynamic_array array doubly_linked_list fifo_queue
 BUILD_DIR := build
 
 .PHONY: all $(SUBPROJECTS)
