@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(FifoQueue)
+project(Stack)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_executable(fifo_queue fifo_queue.cpp)
+add_executable(stack stack.c)
 
 

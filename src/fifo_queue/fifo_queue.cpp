@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <iostream>
-#include <vector>
+#include <vector> // this is easy mode
 
 // TODO: some constraints so that T can't be too big
 //       as performance will suffer if it is
@@ -18,7 +18,11 @@ public:
   }
 
   // TODO: implement
-  T removeFromFifo(void) { return m_InternalQ[0]; }
+  T removeFromFifo(void) {
+
+    T return_element = m_InternalQ.back();
+    return return_element;
+  }
 
 private:
   std::vector<T> m_InternalQ;
@@ -26,5 +30,6 @@ private:
 
 int main(void) {
   std::cout << "Hello World" << std::endl;
+  std::cout << "Not yet implemented" << std::endl;
   return 0;
 }
