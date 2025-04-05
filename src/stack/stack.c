@@ -15,6 +15,7 @@ struct Element *push(struct Element *LastElement, int value) {
 }
 
 struct Element *pop(struct Element *LastElement) {
+
   if (LastElement->previousElement != NULL) {
     return LastElement->previousElement;
   }
