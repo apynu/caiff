@@ -1,92 +1,71 @@
 #include <iostream>
-#include <sched.h>
+#include <vector>
 
-template <class T> class FastCircBuf {
+/// faster circular buffer implementation using an array
+template <class T> class fast_circ_buf {
+public:
+  fast_circ_buf(int Size) : m_BufSize(Size) { m_Buf.resize(m_BufSize); };
 
-  struct Node {
-    struct Node *nextnode;
-    T value;
-  };
+  // adds one element to the circular buffer
+  // returns false once the buffer is full, otherwise returns true
+  // except if the override is set, then it'll always return true and override
+  // elements
+  bool push_back(T Element) {
+    bool Success = true;
 
-  FastCircBuf(int size) : m_bufsize(size) {
-    m_buf[m_bufsize];
-
-    // instantiate head node
-    Node *HeadNode = new Node;
-    HeadNode->nextnode = nullptr;
-
-    m_buf[0] = HeadNode;
-  };
-
-  ~FastCircBuf() {
-    for (int i = 0; i < m_bufsize && i < m_occupation; i++) {
-      delete m_buf[i];
-    }
-  };
-
-  // pushes an element to a new node until the buffer is full
-  // returns false once the buffer is full
-  // when the buffer is full a call to 'clear' or 'remove' has
-  // to be made to free up more space
-  bool push_back(T element) {
-
-    bool success = true;
-
-    // handle first element/node
-    if (m_occupation == 0) {
-      m_buf[0]->value = element;
-      m_occupation += 1;
-
-    } else {
-      Node *NewNode = new Node;
-      NewNode->value = element;
-      NewNode->nextnode = nullptr;
-
-      // add to array
-      m_buf[m_occupation] = NewNode;
-
-      // previous node points to new node
-      m_buf[m_occupation - 1]->nextnode = NewNode;
-
-      m_occupation += 1;
-
-      // max occupation reached
-      if (m_occupation == m_bufsize - 1) {
-        // point to head node to wrap around
-        NewNode->nextnode = m_buf[0];
-        success = false;
-      }
+    // there is still space for a new element
+    if (m_Occupation <= m_BufSize) {
+      if (m_override)
+        m_Buf.push_back(Element);
+      else
+        Success = false;
     }
 
-    return success;
+    return Success;
   };
 
-  T at(int index) {
-    if (index >= m_bufsize) {
-      return -1;
-    }
-    return m_buf[index];
+  // returns the element at the current index
+  // index wraps around
+  T at(int Index) {
+    Index = Index % m_BufSize;
+    return m_Buf.at(Index);
+  }
+
+  // sets whether push_back should simply override the elements
+  // when the buffer is full
+  void set_override(bool override) { m_override = override; };
+
+  // clears internal data array
+  /// sort of a pseudo clear, simply releases all objects to be overwritten
+  void clear() { m_Occupation = 0; };
+
+  // allocate memory based on new size
+  void realloc(int size) {
+    // set new buffer size
+    m_BufSize = size;
+
+    // resize internal storage, which will only resize if m_BufSize is
+    // bigger than the current capacity
+    m_Buf.resize(m_BufSize);
   };
-
-  // free whole buffer
-  void clear() {
-    for (int i = 0; i < m_bufsize; i++) {
-      m_buf[i] = 0x0; // set all elements of the buffer to nullbytes
-    }
-    m_occupation = 0; // reset occupation
-  };
-
-  void remove(int index) {};
-
-  int size() const { return m_bufsize; };
 
 private:
-  struct Node *m_buf;
-  int m_bufsize;
-  int m_occupation = 0;
+  std::vector<T> m_Buf;
+  int m_BufSize;
+  int m_Occupation = 0;
+  bool m_override = false;
 };
 
 int main(void) {
-  std::cout << "Hello World!" << std::endl;
+  fast_circ_buf<int> CircBuf(5);
+
+  CircBuf.push_back(1);
+  CircBuf.push_back(2);
+  CircBuf.push_back(3);
+  CircBuf.push_back(4);
+  CircBuf.push_back(5);
+
+  std::cout << "Index 7: " << CircBuf.at(8) << std::endl;
+
   return 0;
 }
