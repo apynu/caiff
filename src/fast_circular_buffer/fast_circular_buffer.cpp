@@ -14,11 +14,20 @@ public:
     bool Success = true;
 
     // there is still space for a new element
-    if (m_Occupation <= m_BufSize) {
-      if (m_override)
-        m_Buf.push_back(Element);
-      else
-        Success = false;
+    if (m_Occupation <= m_BufSize)
+      m_Buf.push_back(Element);
+
+    // there is no space but the override flag is set
+    else if (m_override)
+      // NOTE: this is kinda shit tbh
+      m_Buf.push_back(Element);
+    else
+      Success = false;
+
+    m_Buf.push_back(Element);
+
+    for (int i = 0; i < m_BufSize; i++) {
+      std::cout << m_Buf[i] << std::endl;
     }
 
     return Success;
@@ -27,8 +36,19 @@ public:
   // returns the element at the current index
   // index wraps around
   T at(int Index) {
-    Index = Index % m_BufSize;
-    return m_Buf.at(Index);
+
+    /*
+    for (int i = 0; i < m_BufSize; i++) {
+      std::cout << m_Buf.at(i) << std::endl;
+    }
+    */
+
+    while (Index > m_BufSize) {
+      Index = m_BufSize % Index;
+      // printf("Index: %d\nBufSize: %d\n", Index, m_BufSize);
+    }
+    // printf("Index: %d\nBufSize: %d\n", Index, m_BufSize);
+    return m_Buf.at(Index - 1);
   }
 
   // sets whether push_back should simply override the elements
@@ -58,14 +78,19 @@ private:
 
 int main(void) {
   fast_circ_buf<int> CircBuf(5);
+  int testval = 100;
 
-  CircBuf.push_back(1);
+  CircBuf.set_override(true);
+  CircBuf.push_back(testval);
   CircBuf.push_back(2);
   CircBuf.push_back(3);
   CircBuf.push_back(4);
   CircBuf.push_back(5);
 
-  std::cout << "Index 7: " << CircBuf.at(8) << std::endl;
+  std::cout << CircBuf.at(0) << std::endl;
+
+  CircBuf.at(8);
+  // std::cout << "Index 7: " << CircBuf.at(8) << std::endl;
 
   return 0;
 }
