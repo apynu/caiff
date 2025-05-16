@@ -4,7 +4,7 @@
 /// faster circular buffer implementation using an array
 template <class T> class fast_circ_buf {
 public:
-  fast_circ_buf(int Size) : m_BufSize(Size) { m_Buf.resize(m_BufSize); };
+  fast_circ_buf(int Size) : m_BufSize(Size) {};
 
   // adds one element to the circular buffer
   // returns false once the buffer is full, otherwise returns true
@@ -24,25 +24,12 @@ public:
     else
       Success = false;
 
-    m_Buf.push_back(Element);
-
-    for (int i = 0; i < m_BufSize; i++) {
-      std::cout << m_Buf[i] << std::endl;
-    }
-
     return Success;
   };
 
   // returns the element at the current index
   // index wraps around
   T at(int Index) {
-
-    /*
-    for (int i = 0; i < m_BufSize; i++) {
-      std::cout << m_Buf.at(i) << std::endl;
-    }
-    */
-
     while (Index > m_BufSize) {
       Index = m_BufSize % Index;
       // printf("Index: %d\nBufSize: %d\n", Index, m_BufSize);
@@ -87,7 +74,7 @@ int main(void) {
   CircBuf.push_back(4);
   CircBuf.push_back(5);
 
-  std::cout << CircBuf.at(0) << std::endl;
+  //std::cout << CircBuf.at(0) << std::endl;
 
   CircBuf.at(8);
   // std::cout << "Index 7: " << CircBuf.at(8) << std::endl;
